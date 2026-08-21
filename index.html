@@ -747,7 +747,6 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
       <span>Up to <b>$15,000</b> borrowed</span>
       <span><b>10 years</b> to repay</span>
       <span>Old unit <b>removed</b></span>
-      <span><b>No</b> door-knocking</span>
       <span>Free eligibility check</span>
     </div>
   </div>
@@ -808,7 +807,7 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
           <div class="rk">What you borrow</div>
           <div>
             <h3>Between $2,000 and $15,000</h3>
-            <p>The loan has a $2,000 floor, so a small standalone job can sit below the threshold.</p>
+            <p>You pay a minimum co-payment of $220 directly; the rest of the price is financed.</p>
           </div>
           <div class="rv num">$2k – $15k<small>Loan range</small></div>
         </article>
@@ -845,6 +844,7 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
         <dl class="terms" style="margin-top:30px">
           <div><dt>Interest rate</dt><dd>0% p.a.</dd></div>
           <div><dt>Comparison rate</dt><dd>0.00% p.a.</dd></div>
+          <div><dt>Minimum co-payment</dt><dd>$220</dd></div>
           <div><dt>Loan range</dt><dd>$2,000 – $15,000</dd></div>
           <div><dt>Establishment fee</dt><dd>$0</dd></div>
           <div><dt>Account-keeping fee</dt><dd>$0</dd></div>
@@ -873,10 +873,21 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
 
           <div class="ctl">
             <div class="ctl-top">
-              <label for="amt">Amount financed</label>
-              <output class="num" id="outAmt" for="amt">$3,000</output>
+              <label for="amt">Total upgrade price</label>
+              <output class="num" id="outAmt" for="amt">$3,220</output>
             </div>
-            <input type="range" id="amt" min="2000" max="15000" step="100" value="3000">
+            <input type="range" id="amt" min="2220" max="15220" step="100" value="3220">
+          </div>
+
+          <div class="calc-out" style="margin-top:4px">
+            <div class="cell">
+              <span class="k">Your co-payment</span>
+              <span class="v num">$220</span>
+            </div>
+            <div class="cell">
+              <span class="k">Financed via Brighte</span>
+              <span class="v num" id="outFinanced">$3,000</span>
+            </div>
           </div>
 
           <div class="ctl">
@@ -888,9 +899,10 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
           </div>
 
           <p class="calc-note">
-            Illustration only, based on 0% interest and no fees. Not a quote and not an offer of
-            credit. Minimum loan $2,000. Your actual amount, term and approval are determined by
-            Brighte.
+            Illustration only, based on 0% interest and no fees. A minimum co-payment of $220 is
+            paid directly and is not financed; the remaining balance is financed via Brighte,
+            subject to Brighte's $2,000 minimum loan amount. Not a quote and not an offer of
+            credit. Your actual amount, term and approval are determined by Brighte.
           </p>
         </div>
 
@@ -1185,16 +1197,12 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
           contracting and installation work is carried out by Ecogenica Pty Ltd.
         </p>
       </div>
-      <div class="foot-tel">
-        <span class="k">Enquiries</span>
-        <a class="v" href="tel:0370465222">03 7046 5222</a>
-      </div>
     </div>
 
     <div class="legal">
       <p>
         Installed by <b>Ecogenica Pty Ltd</b> (ABN 47 650 436 089), NSW Contractor Licence
-        No. <b>397621C</b>. Phone 03 7046 5222.
+        No. <b>397621C</b>.
       </p>
       <p>
         Advertised price is a “from” price, excludes GST, and varies by property and installation
@@ -1280,9 +1288,12 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
   var amt = document.getElementById("amt"),
       term = document.getElementById("term"),
       outAmt = document.getElementById("outAmt"),
+      outFinanced = document.getElementById("outFinanced"),
       outTerm = document.getElementById("outTerm"),
       outWeek = document.getElementById("outWeek"),
       outMonth = document.getElementById("outMonth");
+
+  var CO_PAYMENT = 220; /* minimum customer co-payment, paid directly, not financed */
 
   var money = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
   var money2 = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1294,10 +1305,12 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
 
   function calc(){
     if (!amt || !term) return;
-    var principal = +amt.value, years = +term.value;
+    var totalPrice = +amt.value, years = +term.value;
+    var principal = Math.max(0, totalPrice - CO_PAYMENT); /* amount actually financed via Brighte */
     var monthly = principal / (years * 12);       /* 0% interest, no fees */
     var weekly  = principal / (years * 52);
-    outAmt.textContent  = money.format(principal);
+    outAmt.textContent  = money.format(totalPrice);
+    if (outFinanced) outFinanced.textContent = money.format(principal);
     outTerm.textContent = years + (years === 1 ? " year" : " years");
     outMonth.innerHTML  = money2.format(monthly) + '<i>/mo</i>';
     outWeek.innerHTML   = money2.format(weekly) + '<i>/wk</i>';
