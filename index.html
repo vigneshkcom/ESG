@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>NSW Home Energy Saver: 290L Heat Pump Hot Water from $799 + GST</title>
-<meta name="description" content="NSW homeowners: upgrade to a 290L heat pump hot water system from $799 + GST under the NSW Home Energy Saver Program. 0% interest finance available. Installed by Ecogenica, NSW Contractor Licence 397621C.">
+<title>NSW Home Energy Saver: Heat Pump Hot Water from $799 + GST</title>
+<meta name="description" content="NSW homeowners: upgrade to a heat pump hot water system from $799 + GST under the NSW Home Energy Saver Program. 3 models, 290L–330L. 0% interest finance available. Installed by Ecogenica, NSW Contractor Licence 397621C.">
 <meta name="theme-color" content="#0D2B5C">
 <meta property="og:type" content="website">
-<meta property="og:title" content="290L Heat Pump Hot Water from $799 + GST: NSW Home Energy Saver">
+<meta property="og:title" content="Heat Pump Hot Water from $799 + GST: NSW Home Energy Saver">
 <meta property="og:description" content="0% interest finance for eligible NSW households. Licensed NSW installer. Free eligibility check, no obligation.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230D2B5C'/%3E%3Cpath d='M16 6a10 10 0 0 1 10 10H6A10 10 0 0 1 16 6z' fill='%23FDB813'/%3E%3Crect x='7' y='19' width='18' height='3' rx='1.5' fill='%23149AA3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -445,6 +445,38 @@ input[type=range]:focus-visible{outline:3px solid var(--teal);outline-offset:4px
   text-transform:uppercase;color:#fff;background:var(--navy);padding:6px 11px;border-radius:999px;
 }
 
+/* ═══════════ MODEL CARDS ═══════════ */
+.models{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.model-card{
+  background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);
+  box-shadow:var(--sh-2);overflow:hidden;display:flex;flex-direction:column;
+}
+.model-plate{
+  position:relative;padding:22px;min-height:200px;
+  background:radial-gradient(120% 100% at 50% 0%,#fff,var(--paper-2));
+  border-bottom:1px solid var(--rule);display:grid;place-items:center;overflow:hidden;
+}
+.model-plate::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(60% 50% at 50% 100%,rgba(20,154,163,.14),transparent 70%);
+}
+.model-plate img{position:relative;max-height:190px;width:auto;filter:drop-shadow(0 18px 26px rgba(11,30,56,.16))}
+.model-badge{
+  position:absolute;top:14px;left:14px;z-index:2;
+  font-family:var(--data);font-size:var(--t-micro);font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:#fff;background:var(--teal-700);padding:6px 11px;border-radius:999px;
+}
+.model-body{padding:22px 22px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+.model-body h3{font-size:1.2rem}
+.model-body .desc{font-size:var(--t-sm);color:var(--ink-3);line-height:1.5}
+.model-price{display:flex;align-items:baseline;gap:6px;margin-top:2px}
+.model-price .from{font-family:var(--data);font-size:var(--t-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.model-price .amt{font-family:var(--display);font-weight:800;font-size:2.1rem;letter-spacing:-.03em;color:var(--navy)}
+.model-price .gst{font-family:var(--data);font-size:var(--t-xs);color:var(--ink-3)}
+.model-body .terms{margin-top:auto;padding-top:8px}
+.model-body .terms > div{padding:10px 0}
+@media(max-width:860px){.models{grid-template-columns:1fr}}
+
 /* heat flow diagram */
 .flow{margin-top:34px;padding:26px clamp(18px,2.4vw,28px);background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--sh-1)}
 .flow h4{margin:0 0 4px;font-family:var(--display);font-size:1.05rem;font-weight:700;letter-spacing:-.02em}
@@ -685,8 +717,8 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
         </h1>
 
         <p class="hero-lede" data-rv style="--d:220ms">
-          A 290&nbsp;litre heat pump hot water system for NSW homeowners, installed by a licensed
-          NSW contractor, with 0% interest finance available for eligible households.
+          290L–330L heat pump hot water systems for NSW homeowners, installed by a licensed NSW
+          contractor, with 0% interest finance available for eligible households.
         </p>
 
         <div class="priceline" data-rv="scale" style="--d:300ms">
@@ -696,8 +728,8 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
             <span class="gst">+ GST</span>
           </div>
           <div class="what">
-            <div class="m">ECON-300RVW</div>
-            <div class="d">290L Heat Pump Hot Water System</div>
+            <div class="m">3 models available</div>
+            <div class="d">All-in-one or split system, 290L–330L</div>
           </div>
         </div>
 
@@ -723,7 +755,7 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
 
         <div class="pill p1">
           <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 22a7 7 0 0 0 7-7c0-2-1-4-3-6l-4-5-4 5c-2 2-3 4-3 6a7 7 0 0 0 7 7z"/></svg></span>
-          <span><span class="k">Tank</span><span class="v num">290 L</span></span>
+          <span><span class="k">Tank</span><span class="v num">290–330 L</span></span>
         </div>
         <div class="pill p2">
           <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
@@ -916,34 +948,89 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
     </div>
   </section>
 
-  <!-- ═══════════ THE SYSTEM ═══════════ -->
+  <!-- ═══════════ THE SYSTEMS ═══════════ -->
   <section id="system">
-    <div class="shell sys">
-      <div class="sys-plate" data-rv="scale">
-        <span class="sys-badge">ECON-300RVW</span>
-        <img id="sysImg" data-clone="heroImg" alt="ECON-300RVW heat pump hot water system, front view" width="612" height="900">
+    <div class="shell">
+      <div data-rv>
+        <p class="eyebrow" style="color:var(--teal-700);margin-bottom:16px">The systems</p>
+        <h2 style="font-size:var(--t-h2)">Three ways to upgrade, all heat pump</h2>
+        <p style="margin-top:18px;font-size:var(--t-lede);color:var(--ink-2);line-height:1.6;max-width:60ch">
+          Every model draws warmth out of the surrounding air and moves it into the tank, rather
+          than heating water with an electric element, which is why it costs less to run. Prices
+          below are for a straight electric-to-electric swap; gas and solar-boosted conversions
+          are priced by our team on your call.
+        </p>
       </div>
 
-      <div data-rv="right" style="--d:100ms">
-        <p class="eyebrow" style="color:var(--teal-700);margin-bottom:16px">The system</p>
-        <h2 style="font-size:var(--t-h2)">A 290L heat pump, not an element</h2>
-        <p style="margin-top:18px;font-size:var(--t-lede);color:var(--ink-2);line-height:1.6;max-width:46ch">
-          Rather than heating water with an electric element, it draws warmth out of the surrounding
-          air and moves it into the tank. That’s why it uses less electricity to do the same job.
-        </p>
+      <div class="models" style="margin-top:36px">
 
-        <dl class="terms" style="margin-top:28px">
-          <div><dt>Model</dt><dd>ECON-300RVW</dd></div>
-          <div><dt>Tank capacity</dt><dd>290 L</dd></div>
-          <div><dt>Type</dt><dd>Heat pump hot water</dd></div>
-          <div><dt>Program</dt><dd>NSW Home Energy Saver</dd></div>
-          <div><dt>Price from</dt><dd>$799 + GST</dd></div>
-        </dl>
+        <article class="model-card" data-rv style="--d:0ms">
+          <div class="model-plate">
+            <span class="model-badge">All-in-one</span>
+            <img data-clone="heroImg" alt="ECON-300RVW heat pump hot water system, front view" width="612" height="900">
+          </div>
+          <div class="model-body">
+            <h3>ECON-300RVW</h3>
+            <p class="desc">290L all-in-one heat pump hot water system, tank and compressor in one unit.</p>
+            <div class="model-price">
+              <span class="from">From</span>
+              <span class="amt num">$799</span>
+              <span class="gst">+ GST</span>
+            </div>
+            <dl class="terms">
+              <div><dt>Tank capacity</dt><dd>290 L</dd></div>
+              <div><dt>Type</dt><dd>All-in-one</dd></div>
+            </dl>
+          </div>
+        </article>
 
-        <div class="flow">
+        <article class="model-card" data-rv style="--d:90ms">
+          <div class="model-plate">
+            <span class="model-badge">Split System</span>
+            <img src="/assets/eg-290fr.png" alt="EG-290FR heat pump hot water system, front view" width="1254" height="1254" loading="lazy">
+          </div>
+          <div class="model-body">
+            <h3>EG-290FR</h3>
+            <p class="desc">290L split system heat pump hot water, tank and outdoor compressor separate.</p>
+            <div class="model-price">
+              <span class="from">From</span>
+              <span class="amt num">$799</span>
+              <span class="gst">+ GST</span>
+            </div>
+            <dl class="terms">
+              <div><dt>Tank capacity</dt><dd>290 L</dd></div>
+              <div><dt>Type</dt><dd>Split System</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="model-card" data-rv style="--d:180ms">
+          <div class="model-plate">
+            <span class="model-badge">Split System</span>
+            <img src="/assets/eg-330fr.png" alt="EG-330FR heat pump hot water system, front view" width="733" height="586" loading="lazy">
+          </div>
+          <div class="model-body">
+            <h3>EG-330FR</h3>
+            <p class="desc">330L split system heat pump hot water, for higher hot water demand.</p>
+            <div class="model-price">
+              <span class="from">From</span>
+              <span class="amt num">$999</span>
+              <span class="gst">+ GST</span>
+            </div>
+            <dl class="terms">
+              <div><dt>Tank capacity</dt><dd>330 L</dd></div>
+              <div><dt>Type</dt><dd>Split System</dd></div>
+            </dl>
+          </div>
+        </article>
+
+      </div>
+
+      <div style="max-width:720px;margin-inline:auto">
+        <div class="flow" style="margin-top:40px">
           <h4>How a heat pump makes hot water</h4>
           <p class="cap">Air in, heat moved, water hot: the compressor does the moving, not the heating.</p>
-          <svg viewBox="0 0 560 130" role="img" aria-label="Diagram: ambient air is drawn in, a compressor moves that heat, and it is transferred into the 290 litre tank">
+          <svg viewBox="0 0 560 130" role="img" aria-label="Diagram: ambient air is drawn in, a compressor moves that heat, and it is transferred into the tank">
             <defs>
               <linearGradient id="gFlow" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0" stop-color="#149AA3"/><stop offset="1" stop-color="#FDB813"/>
@@ -979,7 +1066,7 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
             <g>
               <rect x="452" y="26" width="52" height="72" rx="22" fill="#FFF3D4" stroke="#FDB813" stroke-width="1.5"/>
               <path d="M478 44c7 8 10 12 10 17a10 10 0 0 1-20 0c0-5 3-9 10-17z" fill="#D71920" opacity=".8"/>
-              <text x="478" y="112" text-anchor="middle" class="fl-title">290L stored hot</text>
+              <text x="478" y="112" text-anchor="middle" class="fl-title">Stored hot water</text>
               <text x="478" y="126" text-anchor="middle" class="fl-label">Step 03</text>
             </g>
           </svg>
