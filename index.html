@@ -886,6 +886,7 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
           <div><dt>Comparison rate</dt><dd>0.00% p.a.</dd></div>
           <div><dt>Minimum co-payment (if financing)</dt><dd>$220</dd></div>
           <div><dt>Loan range</dt><dd>$2,000 – $15,000</dd></div>
+          <div><dt>Smallest financeable job</dt><dd>$2,220</dd></div>
           <div><dt>Establishment fee</dt><dd>$0</dd></div>
           <div><dt>Account-keeping fee</dt><dd>$0</dd></div>
           <div><dt>Late payment fee</dt><dd>$4.99</dd></div>
@@ -917,6 +918,10 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
               <output class="num" id="outAmt" for="amt">$3,220</output>
             </div>
             <input type="range" id="amt" min="2220" max="15220" step="100" value="3220">
+            <p style="margin-top:8px;font-size:var(--t-xs);color:var(--ink-3)">
+              Slider starts at $2,220 — the smallest job Brighte can finance ($220 co-payment +
+              $2,000 minimum loan).
+            </p>
           </div>
 
           <div class="calc-out" style="margin-top:4px">
@@ -927,6 +932,7 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
             <div class="cell">
               <span class="k">Financed via Brighte</span>
               <span class="v num" id="outFinanced">$3,000</span>
+              <span style="display:block;font-size:var(--t-micro);color:var(--ink-3);margin-top:3px">$2,000 minimum loan</span>
             </div>
           </div>
 
