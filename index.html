@@ -617,21 +617,7 @@ details[open] .ans{grid-template-rows:1fr}
 
 /* ═══════════ FOOTER ═══════════ */
 footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,66px) 0 34px;font-size:var(--t-sm)}
-.foot-top{display:grid;grid-template-columns:minmax(0,1.3fr) auto auto;gap:clamp(32px,5vw,72px);padding-bottom:32px;border-bottom:1px solid var(--on-navy-rule);align-items:start}
-.foot-col-h{font-family:var(--data);font-size:var(--t-micro);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--on-navy-3);margin-bottom:14px}
-.foot-nav{display:flex;flex-direction:column;gap:11px;list-style:none;margin:0;padding:0}
-.foot-nav a{color:var(--on-navy-2);font-size:var(--t-sm);text-decoration:none;transition:color .2s var(--ease)}
-.foot-nav a:hover{color:#fff}
-.foot-cta{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
-.foot-cta .foot-badge{display:flex;align-items:center;gap:10px}
-.foot-cta .foot-badge img{height:26px;width:auto;background:#fff;padding:4px 7px;border-radius:6px}
-.foot-cta .foot-badge span{font-size:var(--t-xs);color:var(--on-navy-2);line-height:1.4;max-width:20ch}
-.foot-logo{height:44px;width:auto;margin-bottom:16px;background:#fff;padding:7px 12px;border-radius:10px}
-.foot-role{max-width:46ch;line-height:1.65}
-.foot-tel .k{display:block;font-family:var(--data);font-size:var(--t-micro);font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--on-navy-3);margin-bottom:6px}
-.foot-tel .v{font-family:var(--data);font-size:1.4rem;font-weight:600;color:#fff;text-decoration:none;font-variant-numeric:tabular-nums;transition:color .2s var(--ease)}
-.foot-tel .v:hover{color:var(--gold)}
-.legal{padding-top:22px;font-size:var(--t-xs);line-height:1.75;color:rgba(255,255,255,.5);max-width:88ch}
+.legal{font-size:var(--t-xs);line-height:1.75;color:rgba(255,255,255,.5);max-width:88ch}
 .legal p + p{margin-top:11px}
 .legal b{color:rgba(255,255,255,.85);font-weight:600}
 .legal a{color:var(--on-navy-3)}
@@ -668,7 +654,6 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
   .calc-out{grid-template-columns:1fr}
   .priceline .what{padding-left:0;border-left:0}
   .stage img{max-height:270px}
-  .foot-top{grid-template-columns:1fr;gap:26px}
   .pill.p2{display:none}
 }
 
@@ -1302,35 +1287,6 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
 <!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   <div class="shell">
-    <div class="foot-top">
-      <div>
-        <img class="foot-logo" id="footLogo" data-clone="mastLogo" alt="ESG Energy Savers Group" width="338" height="190">
-        <p class="foot-role">
-          ESG (Energy Savers Group) provides advertising and lead generation only. All supply,
-          contracting and installation work is carried out by Ecogenica Pty Ltd.
-        </p>
-      </div>
-
-      <div>
-        <p class="foot-col-h">On this page</p>
-        <ul class="foot-nav">
-          <li><a href="#system">The systems</a></li>
-          <li><a href="#finance">Finance</a></li>
-          <li><a href="#process">How it works</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-
-      <div class="foot-cta">
-        <p class="foot-col-h">Get started</p>
-        <a class="btn btn-gold btn-sm" href="#check">Check your eligibility</a>
-        <div class="foot-badge">
-          <img data-clone="ecoLogo" alt="Ecogenica" width="80" height="76">
-          <span>Installed by a licensed NSW contractor</span>
-        </div>
-      </div>
-    </div>
-
     <div class="legal">
       <p>
         Installed by <b>Ecogenica Pty Ltd</b> (ABN 47 650 436 089), NSW Contractor Licence
