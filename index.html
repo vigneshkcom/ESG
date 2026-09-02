@@ -538,7 +538,7 @@ input[type=range]:focus-visible{outline:3px solid var(--teal);outline-offset:4px
 
 /* ═══════════ FORM ═══════════ */
 .form{
-  position:sticky;top:96px;overflow:hidden;
+  position:sticky;top:96px;overflow:visible;
   background:var(--paper);border:1px solid var(--rule);border-radius:var(--r-lg);
   padding:clamp(24px,3vw,32px);box-shadow:var(--sh-3);
 }
@@ -567,6 +567,18 @@ input[type=range]:focus-visible{outline:3px solid var(--teal);outline-offset:4px
 .fld input:focus + label,.fld input:not(:placeholder-shown) + label,
 .fld select:focus + label,.fld select:valid + label{transform:translateY(-9px) scale(.72);color:var(--teal-700)}
 .fld input:user-invalid{border-color:var(--red)}
+.address-results{
+  position:absolute;z-index:30;left:0;right:0;top:calc(100% + 5px);display:none;
+  max-height:245px;overflow-y:auto;margin:0;padding:6px;list-style:none;
+  border:1px solid #cbd8df;border-radius:14px;background:#fff;
+  box-shadow:0 16px 34px rgba(24,53,69,.18)
+}
+.address-results.show{display:block}
+.address-results button{
+  width:100%;padding:10px 12px;border:0;border-radius:9px;background:transparent;
+  color:var(--ink);font:inherit;font-size:13px;line-height:1.35;text-align:left;cursor:pointer
+}
+.address-results button:hover,.address-results button.active{background:var(--teal-100);color:var(--teal-700)}
 .address-attrib{margin:-5px 2px 14px;font-size:var(--t-micro);color:var(--ink-3);line-height:1.5}
 .address-attrib a{color:inherit}
 
@@ -1196,12 +1208,12 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
               <label for="e">Email address</label>
             </div>
             <div class="fld">
-              <input id="a" name="address" type="text" autocomplete="street-address" list="addressSuggestions" aria-describedby="addressHint" placeholder=" " required>
+              <input id="a" name="address" type="text" autocomplete="off" aria-autocomplete="list" aria-controls="addressSuggestions" aria-expanded="false" aria-describedby="addressHint" placeholder=" " required>
               <label for="a">Property address</label>
-              <datalist id="addressSuggestions"></datalist>
+              <div class="address-results" id="addressSuggestions" role="listbox" aria-label="NSW address suggestions"></div>
             </div>
             <p class="address-attrib" id="addressHint">
-              Start typing for Australian address suggestions from
+              Start typing to choose a NSW address from
               <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> via Photon. You can also type the address manually.
             </p>
             <div class="fld">
@@ -1488,63 +1500,119 @@ var PRICING = {
 
   var GHL_WEBHOOK = "https://services.leadconnectorhq.com/hooks/0ewHmibkVDLdpbVj2CB0/webhook-trigger/39d0dddb-906f-4833-9206-4b25bfd4c0bc";
 
-  /* Australian address suggestions via Photon (OpenStreetMap data). */
+  /* Visible NSW address suggestions via Photon (OpenStreetMap data). */
   var addressInput = document.getElementById("a");
   var postcodeInput = document.getElementById("pc");
   var addressList = document.getElementById("addressSuggestions");
-  var addressMatches = {};
   var addressTimer;
+  var addressRequest;
+  var addressResults = [];
+  var activeAddressIndex = -1;
 
   function photonLabel(properties){
     var street = properties.street || properties.name || "";
     var first = properties.housenumber ? properties.housenumber + " " + street : street;
     var locality = properties.city || properties.district || properties.county || "";
-    var parts = [first, locality, properties.state, properties.postcode].filter(Boolean);
+    var state = properties.state === "New South Wales" ? "NSW" : properties.state;
+    var parts = [first, locality, state, properties.postcode].filter(Boolean);
     return parts.filter(function(part, index){ return parts.indexOf(part) === index; }).join(", ");
   }
 
-  function applyAddressMatch(){
-    var postcode = addressMatches[addressInput.value.trim().toLowerCase()];
-    if (postcode) postcodeInput.value = postcode;
+  function closeAddressResults(){
+    addressList.innerHTML = "";
+    addressList.classList.remove("show");
+    addressInput.setAttribute("aria-expanded", "false");
+    activeAddressIndex = -1;
+  }
+
+  function chooseAddress(index){
+    var match = addressResults[index];
+    if (!match) return;
+    addressInput.value = match.label;
+    if (match.postcode) postcodeInput.value = match.postcode;
+    closeAddressResults();
+    postcodeInput.focus();
+  }
+
+  function renderAddressResults(){
+    addressList.innerHTML = "";
+    activeAddressIndex = -1;
+    addressResults.forEach(function(match, index){
+      var button = document.createElement("button");
+      button.type = "button";
+      button.setAttribute("role", "option");
+      button.textContent = match.label;
+      button.addEventListener("mousedown", function(event){ event.preventDefault(); });
+      button.addEventListener("click", function(){ chooseAddress(index); });
+      addressList.appendChild(button);
+    });
+    addressList.classList.toggle("show", addressResults.length > 0);
+    addressInput.setAttribute("aria-expanded", addressResults.length ? "true" : "false");
   }
 
   if (addressInput && postcodeInput && addressList) {
     addressInput.addEventListener("input", function(){
-      applyAddressMatch();
       clearTimeout(addressTimer);
+      if (addressRequest) addressRequest.abort();
       var search = addressInput.value.trim();
-      if (search.length < 5) {
-        addressList.innerHTML = "";
+      if (search.length < 4) {
+        addressResults = [];
+        closeAddressResults();
         return;
       }
 
       addressTimer = setTimeout(async function(){
         try {
+          addressRequest = new AbortController();
           var endpoint = new URL("https://photon.komoot.io/api/");
-          endpoint.searchParams.set("q", search);
+          endpoint.searchParams.set("q", search + (/(nsw|new south wales|australia)/i.test(search) ? "" : ", NSW, Australia"));
           endpoint.searchParams.set("countrycode", "AU");
+          endpoint.searchParams.set("bbox", "140.9,-37.6,154.0,-28.1");
+          endpoint.searchParams.set("lat", "-33.8688");
+          endpoint.searchParams.set("lon", "151.2093");
+          endpoint.searchParams.set("location_bias_scale", "0.2");
           endpoint.searchParams.set("lang", "en");
-          endpoint.searchParams.set("limit", "5");
-          var response = await fetch(endpoint.toString());
+          endpoint.searchParams.set("limit", "8");
+          var response = await fetch(endpoint.toString(), { signal: addressRequest.signal });
           if (!response.ok) return;
           var result = await response.json();
-          addressMatches = {};
-          addressList.innerHTML = "";
+          var seen = {};
+          addressResults = [];
           (result.features || []).forEach(function(feature){
             var properties = feature.properties || {};
+            var postcode = String(properties.postcode || "");
+            var inNsw = properties.state === "New South Wales" || properties.state === "NSW" || /^2\d{3}$/.test(postcode);
+            if (!inNsw) return;
             var label = photonLabel(properties);
-            if (!label || addressMatches[label.toLowerCase()] !== undefined) return;
-            addressMatches[label.toLowerCase()] = properties.postcode || "";
-            var option = document.createElement("option");
-            option.value = label;
-            addressList.appendChild(option);
+            var key = label.toLowerCase();
+            if (!label || seen[key]) return;
+            seen[key] = true;
+            addressResults.push({ label: label, postcode: postcode });
           });
+          renderAddressResults();
         } catch (error) {
-          /* Suggestions are optional; manual address entry remains available. */
+          if (error.name !== "AbortError") closeAddressResults();
         }
-      }, 550);
+      }, 350);
     });
-    addressInput.addEventListener("change", applyAddressMatch);
+    addressInput.addEventListener("keydown", function(event){
+      var buttons = addressList.querySelectorAll("button");
+      if (!buttons.length) return;
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        activeAddressIndex += event.key === "ArrowDown" ? 1 : -1;
+        if (activeAddressIndex < 0) activeAddressIndex = buttons.length - 1;
+        if (activeAddressIndex >= buttons.length) activeAddressIndex = 0;
+        buttons.forEach(function(button, index){ button.classList.toggle("active", index === activeAddressIndex); });
+        buttons[activeAddressIndex].scrollIntoView({ block: "nearest" });
+      } else if (event.key === "Enter" && activeAddressIndex >= 0) {
+        event.preventDefault();
+        chooseAddress(activeAddressIndex);
+      } else if (event.key === "Escape") {
+        closeAddressResults();
+      }
+    });
+    addressInput.addEventListener("blur", function(){ setTimeout(closeAddressResults, 120); });
   }
 
   form.addEventListener("submit", async function(ev){
