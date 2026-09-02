@@ -1474,22 +1474,66 @@ var PRICING = {
   /* ── 7. lead form ─────────────────────────────────── */
   var form = document.getElementById("leadForm"), s = document.getElementById("fstat");
   if (!form) return;
-  form.addEventListener("submit", function(ev){
+
+  var GHL_WEBHOOK = "https://services.leadconnectorhq.com/hooks/0ewHmibkVDLdpbVj2CB0/webhook-trigger/39d0dddb-906f-4833-9206-4b25bfd4c0bc";
+
+  form.addEventListener("submit", async function(ev){
     ev.preventDefault();
     s.classList.remove("show", "err");
+
     if (!form.checkValidity()) {
       s.textContent = "Please complete every field and tick the consent box.";
       s.classList.add("show", "err");
       form.reportValidity();
       return;
     }
-    /* DEVELOPER: replace with a POST to your GHL CRM inbound webhook.
-       var data = Object.fromEntries(new FormData(form).entries());
-       fetch("https://services.leadconnectorhq.com/hooks/YOUR_WEBHOOK", {
-         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data)
-       }); */
-    s.textContent = "Design preview: this form isn’t connected yet. Wire it to your GHL CRM webhook to start receiving leads.";
-    s.classList.add("show");
+
+    var button = form.querySelector('button[type="submit"]');
+    var originalButton = button.innerHTML;
+    button.disabled = true;
+    button.textContent = "Sending…";
+
+    var formData = new FormData(form);
+    var fullName = String(formData.get("name") || "").trim();
+    var nameParts = fullName.split(/\s+/);
+    var query = new URLSearchParams(window.location.search);
+    var payload = new URLSearchParams();
+
+    payload.set("name", fullName);
+    payload.set("full_name", fullName);
+    payload.set("first_name", nameParts.shift() || "");
+    payload.set("last_name", nameParts.join(" "));
+    payload.set("phone", String(formData.get("phone") || "").trim());
+    payload.set("email", String(formData.get("email") || "").trim());
+    payload.set("address", String(formData.get("address") || "").trim());
+    payload.set("homeowner", String(formData.get("homeowner") || ""));
+    payload.set("consent", formData.get("consent") ? "true" : "false");
+    payload.set("source", "ESG NSW HWS Website");
+    payload.set("page_url", window.location.href);
+    payload.set("submitted_at", new Date().toISOString());
+
+    ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","fbclid","gclid"].forEach(function(key){
+      var value = query.get(key);
+      if (value) payload.set(key, value);
+    });
+
+    try {
+      await fetch(GHL_WEBHOOK, {
+        method: "POST",
+        mode: "no-cors",
+        body: payload,
+        keepalive: true
+      });
+      form.reset();
+      s.textContent = "Thanks — we’ve received your enquiry. Our team will be in touch shortly.";
+      s.classList.add("show");
+    } catch (error) {
+      s.textContent = "We couldn’t send your enquiry. Please call 03 7046 5222 or try again.";
+      s.classList.add("show", "err");
+    } finally {
+      button.disabled = false;
+      button.innerHTML = originalButton;
+    }
   });
 })();
 </script>
