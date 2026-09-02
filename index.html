@@ -567,6 +567,8 @@ input[type=range]:focus-visible{outline:3px solid var(--teal);outline-offset:4px
 .fld input:focus + label,.fld input:not(:placeholder-shown) + label,
 .fld select:focus + label,.fld select:valid + label{transform:translateY(-9px) scale(.72);color:var(--teal-700)}
 .fld input:user-invalid{border-color:var(--red)}
+.address-attrib{margin:-5px 2px 14px;font-size:var(--t-micro);color:var(--ink-3);line-height:1.5}
+.address-attrib a{color:inherit}
 
 .consent{display:flex;gap:12px;align-items:flex-start;margin:20px 0 18px}
 .consent input{margin-top:2px;width:18px;height:18px;flex:none;accent-color:var(--teal);cursor:pointer}
@@ -1194,8 +1196,17 @@ footer{background:var(--navy-900);color:var(--on-navy-3);padding:clamp(46px,5vw,
               <label for="e">Email address</label>
             </div>
             <div class="fld">
-              <input id="a" name="address" type="text" autocomplete="street-address" placeholder=" " required>
+              <input id="a" name="address" type="text" autocomplete="street-address" list="addressSuggestions" aria-describedby="addressHint" placeholder=" " required>
               <label for="a">Property address</label>
+              <datalist id="addressSuggestions"></datalist>
+            </div>
+            <p class="address-attrib" id="addressHint">
+              Start typing for Australian address suggestions from
+              <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> via Photon. You can also type the address manually.
+            </p>
+            <div class="fld">
+              <input id="pc" name="postcode" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{4}" maxlength="4" placeholder=" " required>
+              <label for="pc">Postcode</label>
             </div>
             <div class="fld">
               <select id="o" name="homeowner" required>
@@ -1477,6 +1488,65 @@ var PRICING = {
 
   var GHL_WEBHOOK = "https://services.leadconnectorhq.com/hooks/0ewHmibkVDLdpbVj2CB0/webhook-trigger/39d0dddb-906f-4833-9206-4b25bfd4c0bc";
 
+  /* Australian address suggestions via Photon (OpenStreetMap data). */
+  var addressInput = document.getElementById("a");
+  var postcodeInput = document.getElementById("pc");
+  var addressList = document.getElementById("addressSuggestions");
+  var addressMatches = {};
+  var addressTimer;
+
+  function photonLabel(properties){
+    var street = properties.street || properties.name || "";
+    var first = properties.housenumber ? properties.housenumber + " " + street : street;
+    var locality = properties.city || properties.district || properties.county || "";
+    var parts = [first, locality, properties.state, properties.postcode].filter(Boolean);
+    return parts.filter(function(part, index){ return parts.indexOf(part) === index; }).join(", ");
+  }
+
+  function applyAddressMatch(){
+    var postcode = addressMatches[addressInput.value.trim().toLowerCase()];
+    if (postcode) postcodeInput.value = postcode;
+  }
+
+  if (addressInput && postcodeInput && addressList) {
+    addressInput.addEventListener("input", function(){
+      applyAddressMatch();
+      clearTimeout(addressTimer);
+      var search = addressInput.value.trim();
+      if (search.length < 5) {
+        addressList.innerHTML = "";
+        return;
+      }
+
+      addressTimer = setTimeout(async function(){
+        try {
+          var endpoint = new URL("https://photon.komoot.io/api/");
+          endpoint.searchParams.set("q", search);
+          endpoint.searchParams.set("countrycode", "AU");
+          endpoint.searchParams.set("lang", "en");
+          endpoint.searchParams.set("limit", "5");
+          var response = await fetch(endpoint.toString());
+          if (!response.ok) return;
+          var result = await response.json();
+          addressMatches = {};
+          addressList.innerHTML = "";
+          (result.features || []).forEach(function(feature){
+            var properties = feature.properties || {};
+            var label = photonLabel(properties);
+            if (!label || addressMatches[label.toLowerCase()] !== undefined) return;
+            addressMatches[label.toLowerCase()] = properties.postcode || "";
+            var option = document.createElement("option");
+            option.value = label;
+            addressList.appendChild(option);
+          });
+        } catch (error) {
+          /* Suggestions are optional; manual address entry remains available. */
+        }
+      }, 550);
+    });
+    addressInput.addEventListener("change", applyAddressMatch);
+  }
+
   form.addEventListener("submit", async function(ev){
     ev.preventDefault();
     s.classList.remove("show", "err");
@@ -1506,6 +1576,7 @@ var PRICING = {
     payload.set("phone", String(formData.get("phone") || "").trim());
     payload.set("email", String(formData.get("email") || "").trim());
     payload.set("address", String(formData.get("address") || "").trim());
+    payload.set("postcode", String(formData.get("postcode") || "").trim());
     payload.set("homeowner", String(formData.get("homeowner") || ""));
     payload.set("consent", formData.get("consent") ? "true" : "false");
     payload.set("source", "ESG NSW HWS Website");
